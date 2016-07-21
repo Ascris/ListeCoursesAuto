@@ -18,11 +18,31 @@ public class ScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Premier magasin test
+        Magasin m1= new Magasin("Carrefour");
+            Rayon r1= new Rayon("Fruits et légumes");
+                Aliment a1= new Aliment("Pomme");
+                Aliment a2= new Aliment("Concombre");
+            r1.ajoutAliment(a1);
+            r1.ajoutAliment(a2);
+            Rayon r2= new Rayon("Boulangerie");
+                Aliment a3= new Aliment("Pain");
+                Aliment a4= new Aliment("Croissant");
+            r2.ajoutAliment(a3);
+            r2.ajoutAliment(a4);
+        m1.ajoutRayon(r1);
+        m1.ajoutRayon(r2);
+
+        String stock= new String();
+        for(Aliment a : m1.getAllAliments()){
+            stock= stock + a.getNom().toString();
+        }
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final String finalStock = stock;
         fab.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, finalStock, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
