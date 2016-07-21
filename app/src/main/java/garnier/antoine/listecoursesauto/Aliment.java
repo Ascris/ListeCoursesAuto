@@ -5,6 +5,7 @@ package garnier.antoine.listecoursesauto;
  */
 public class Aliment {
     private String nom;
+    private boolean selected= false;
 
     //Constructeur
     public Aliment(String name) {
@@ -18,5 +19,13 @@ public class Aliment {
     }
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public boolean isSelected(){
+        return selected;
+    }
+
+    public void setSelected(boolean select){
+        selected= select;
     }
 }
