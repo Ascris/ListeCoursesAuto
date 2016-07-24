@@ -30,6 +30,13 @@ public class Magasin {
     public ArrayList<Rayon> getRayons() {
         return rayons;
     }
+    public ArrayList<String> getNomsRayons(){
+        ArrayList<String> res= new ArrayList<String>();
+        for(Rayon r : rayons){
+            res.add(r.getNom());
+        }
+        return res;
+    }
 
     //Ajoute un rayon s'il n'existe pas deja
     public void ajoutRayon(Rayon r){
@@ -40,6 +47,7 @@ public class Magasin {
             rayons.add(r);
         }
     }
+
     //Supprime un rayon
     public void suppressionRayon(Rayon r){
         if(rayons.contains(r)){
@@ -49,12 +57,11 @@ public class Magasin {
             System.out.println("Suppression impossible - rayon non existant");
         }
     }
-
     //Retourne la liste de tous les aliments du magasin
     public ArrayList<Aliment> getAllAliments(){
         ArrayList<Aliment> res= new ArrayList<Aliment>();
         for(Rayon r : rayons){
-            for(Aliment a : r.getAlimentsAcceptes()){
+            for(Aliment a : r.getAliments()){
                 System.out.println("Aliment " + a.toString() + " ajouté !");
                 res.add(a);
             }
@@ -66,4 +73,42 @@ public class Magasin {
         Aliment a= new Aliment(aliment_a_ajouter);
         rayons.get(0).ajoutAliment(a); //ajout dans le premier rayon pour le moment
     }
+
+    public Integer getIndiceRayon(String nom_rayon){
+        for(int i= 0; i < rayons.size(); ++i){
+            if(rayons.get(i).getNom() == nom_rayon) return i;
+        }
+        return 0;
+    }
+
+    public void ajoutAlimentARayon(String nom_rayon, Aliment a){
+        int indice_rayon= getIndiceRayon(nom_rayon);
+        rayons.get(indice_rayon).ajoutAliment(a);
+    }
+
+    public ArrayList<Aliment> getAllAlimentsRayon(String nom_rayon){
+        int indice_rayon= getIndiceRayon(nom_rayon);
+        ArrayList<Aliment> allAliments= rayons.get(indice_rayon).getAliments();
+        ArrayList<Aliment> res= new ArrayList<Aliment>();
+        for(int i= 0; i < allAliments.size(); ++i){
+            Aliment a= allAliments.get(i);
+            res.add(a);
+        }
+        return res;
+    }
+
+    /**
+     * Retourne les indices des noms de rayon passes en parametre
+     * @param noms_rayons : liste des noms des rayons du magasin
+     * @return liste des indices des rayons (liste d'entiers)
+     */
+    public ArrayList<Integer> getIndicesNomsRayons(ArrayList<String> noms_rayons){
+        ArrayList<Integer> res= new ArrayList<Integer>();
+        for(String nom_rayon : noms_rayons){
+            res.add(getIndiceRayon(nom_rayon));
+        }
+        return res;
+    }
+
+
 }

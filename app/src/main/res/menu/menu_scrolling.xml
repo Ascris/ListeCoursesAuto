@@ -18,7 +18,6 @@
           android:title="@string/check_aliments"
           android:orderInCategory="10"
           app:showAsAction="ifRoom"/>
-
     <item android:id="@id/check_aliments"
           android:title="@string/check_aliments"
           android:orderInCategory="10"

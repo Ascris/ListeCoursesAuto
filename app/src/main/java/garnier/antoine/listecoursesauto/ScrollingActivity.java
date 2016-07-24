@@ -15,11 +15,15 @@ import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ScrollingActivity extends AppCompatActivity {
 
     MyCustomAdapter dataAdapter= null;
+    HashMap<String, String> rayon_aliment;
+    String FILENAME= "rayon-aliment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,7 @@ public class ScrollingActivity extends AppCompatActivity {
         //Liste des aliments actuelle
         //Premier magasin test
         final Magasin m1= new Magasin("Carrefour");
-        Rayon r1= new Rayon("Fruits et légumes");
+        Rayon r1= new Rayon("FruitsEtLegumes");
         Aliment a1= new Aliment("Pomme");
         Aliment a2= new Aliment("Concombre");
         r1.ajoutAliment(a1);
@@ -44,8 +48,10 @@ public class ScrollingActivity extends AppCompatActivity {
         m1.ajoutRayon(r1);
         m1.ajoutRayon(r2);
 
-        afficherListeAliments(m1);
-//        checkButtonClick();
+        final ArrayList<String> ordreRayons= new ArrayList<String>();
+        ordreRayons.add("Boulangerie");
+        ordreRayons.add("FruitsEtLegumes");
+        afficherAlimentsOrdonnes(m1, ordreRayons);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,13 +63,12 @@ public class ScrollingActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
 
                 m1.ajoutAliment(aliment_a_ajouter);
-                afficherListeAliments(m1);
+                afficherAlimentsOrdonnes(m1, ordreRayons);
             }
         });
     }
 
     private void afficherListeAliments(Magasin m){
-
 
         ArrayList<Aliment> allAliments= m.getAllAliments();
 
@@ -80,6 +85,33 @@ public class ScrollingActivity extends AppCompatActivity {
                 Aliment al= (Aliment) parent.getItemAtPosition(position);
                 Toast.makeText(getApplicationContext(),
                         "Nom aliment : "+al.getNom(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void afficherAlimentsOrdonnes(Magasin m, ArrayList<String> ordreRayons){
+        final ArrayList<Integer> indicesRayons= m.getIndicesNomsRayons(ordreRayons);
+
+        ArrayList<Aliment> allAliments= new ArrayList<Aliment>();
+        ArrayList<Rayon> rayons= m.getRayons();
+        for(Integer i : indicesRayons){
+            Rayon r= rayons.get(i);
+            allAliments.addAll(r.getAliments());
+        }
+
+        //ArrayAdapter pour les aliments du magasin
+        dataAdapter= new MyCustomAdapter(this,
+                R.layout.content_scrolling, allAliments);
+        ListView liste_aliments= (ListView) findViewById(R.id.liste_aliments);
+
+        liste_aliments.setAdapter(dataAdapter);
+
+        liste_aliments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                //Affiche l'aliment quand on clique dessus
+                Aliment al= (Aliment) parent.getItemAtPosition(position);
+                Toast.makeText(getApplicationContext(),
+                "Nom aliment : "+al.getNom(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -191,18 +223,31 @@ public class ScrollingActivity extends AppCompatActivity {
                 // custom dialog
                 final Dialog dialog = new Dialog(this);
                 dialog.setContentView(R.layout.layout_ajout_aliment_au_rayon);
-                dialog.setTitle("Ajouter un aliment dans un rayon");
+                dialog.setTitle("Mettre en rayon");
                 dialog.show();
                 return true;
 
             case R.id.check_aliments:
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("Il vous manque ces aliments :\n");
-
-                ArrayList<Aliment> allAliments= dataAdapter.allAliments;
+                ArrayList<Aliment> allAliments= dataAdapter.allAliments; //recuperation de tous les aliments
+                //recuperation des aliments non coches
+                ArrayList<Integer> alimentsRestants= new ArrayList<Integer>();
                 for(int i= 0 ; i < allAliments.size(); ++i){
                     Aliment al= allAliments.get(i);
                     if(!al.isSelected()){
+                        alimentsRestants.add(i);
+                    }
+                }
+                StringBuffer responseText = new StringBuffer();
+                int nb_aliments_manquants= alimentsRestants.size();
+                if(nb_aliments_manquants == 0){
+                    responseText.append("Votre liste est complete, a la caisse !");
+                } else if(nb_aliments_manquants == 1) {
+                    responseText.append("Il vous manque cet aliment : " + allAliments.get(alimentsRestants.get(0)).getNom());
+                } else {
+                    responseText.append("Il vous manque ces " + alimentsRestants.size() + " aliments :\n");
+                    for(int i= 0 ; i < alimentsRestants.size(); ++i){
+                        Integer indice_aliment_restant= alimentsRestants.get(i);
+                        Aliment al= allAliments.get(indice_aliment_restant);
                         responseText.append("\n" + al.getNom());
                     }
                 }
@@ -224,8 +269,19 @@ public class ScrollingActivity extends AppCompatActivity {
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(inflater.inflate(R.layout.layout_ajout_aliment_au_rayon, null));
+        builder.setPositiveButton(R.id.ajouter_aliment_au_rayon, new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int clicked_button){
+                EditText e1= (EditText)findViewById(R.id.rayon);
+                String nom_rayon= e1.getText().toString();
+                EditText e2= (EditText)findViewById(R.id.nouvel_aliment_dans_rayon);
+                String nouvel_aliment= e2.getText().toString();
 
+
+            }
+
+        });
 
         return builder.create();
     }
+
 }

@@ -7,17 +7,17 @@ import java.util.ArrayList;
  */
 public class Rayon {
     private String nom;
-    private ArrayList<Aliment> alimentsAcceptes; //liste des aliments appartenant a ce rayon
+    private ArrayList<Aliment> aliments; //liste des aliments appartenant a ce rayon
 
     //Constructeurs
     public Rayon(){
         nom= "";
-        alimentsAcceptes= new ArrayList<Aliment>();
+        aliments= new ArrayList<Aliment>();
     }
     public Rayon(String name) {
         System.out.println("Construction d'un rayon");
         nom= name;
-        alimentsAcceptes= new ArrayList<Aliment>();
+        aliments= new ArrayList<Aliment>();
     }
 
     //Getter & setter
@@ -28,24 +28,24 @@ public class Rayon {
         return nom;
     }
 
-    public ArrayList<Aliment> getAlimentsAcceptes(){
-        return alimentsAcceptes;
+    public ArrayList<Aliment> getAliments(){
+        return aliments;
     }
 
     //Ajoute un aliment aux aliments acceptes s'il n'y est pas deja
     public void ajoutAliment(Aliment a){
-        if(alimentsAcceptes.contains(a)){
+        if(aliments.contains(a)){
             System.out.println("Aliment deja dans le rayon");
         } else {
             System.out.println("Ajout de l'aliment au rayon");
-            alimentsAcceptes.add(a);
+            aliments.add(a);
         }
     }
     //Supprime un aliment de la liste des aliments acceptes
     public void suppressionAliment(Aliment a){
-        if(alimentsAcceptes.contains(a)){
+        if(aliments.contains(a)){
             System.out.println("Suppression de l'aliment");
-            alimentsAcceptes.remove(a);
+            aliments.remove(a);
         } else {
             System.out.println("Suppression impossible - aliment non present dans le rayon");
         }
