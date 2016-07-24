@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="6dip" >
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="horizontal"
+                android:padding="6dip">
+
+    <ImageView android:id="@+id/picAliment"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               app:layout_anchor="@id/app_bar"
+               app:layout_anchorGravity="bottom|end"
+               android:maxHeight="@dimen/image_aliment"
+               android:maxWidth="@dimen/image_aliment"
+               android:src="@drawable/pomme"/>
 
     <CheckBox
             android:id="@+id/alimentCliquable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/picAliment"
+            android:layout_alignBottom="@id/picAliment"
+            android:layout_toRightOf="@id/picAliment"
+            android:layout_gravity="center"
             android:layout_alignParentLeft="true"
             android:focusable="false"
             android:focusableInTouchMode="false"
@@ -18,9 +32,11 @@
             android:id="@+id/nomAliment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/alimentCliquable"
-            android:layout_alignBottom="@+id/alimentCliquable"
+            android:layout_alignBaseline="@id/alimentCliquable"
+            android:layout_alignBottom="@id/alimentCliquable"
             android:layout_toRightOf="@+id/alimentCliquable"
-            android:text="TextView" />
+            android:layout_gravity="center"
+            android:text="TextView"/>
 
-</RelativeLayout>
+
+</LinearLayout>

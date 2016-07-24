@@ -9,9 +9,18 @@
         android:layout_height="match_parent"
         tools:context="garnier.antoine.listecoursesauto.ScrollingActivity">
 
-    <ListView
-            android:id="@+id/liste_aliments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="horizontal">
+
+        <ListView android:id="@+id/liste_aliments"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"/>
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:text="@string/large_text"/>
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

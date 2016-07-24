@@ -2,6 +2,28 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="garnier.antoine.listecoursesauto.ScrollingActivity">
+
+    <item android:id="@+id/ajouter_aliment_au_rayon"
+          android:title="@string/mise_en_rayon"
+          android:icon="@android:drawable/ic_menu_add"
+          android:orderInCategory="1"
+          app:showAsAction="ifRoom"/>
+    <item android:id="@id/ajouter_aliment_au_rayon"
+          android:title="@string/mise_en_rayon"
+          android:orderInCategory="1"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/check_aliments"
+          android:icon="@drawable/done"
+          android:title="@string/check_aliments"
+          android:orderInCategory="10"
+          app:showAsAction="ifRoom"/>
+
+    <item android:id="@id/check_aliments"
+          android:title="@string/check_aliments"
+          android:orderInCategory="10"
+          app:showAsAction="never"/>
+
     <item android:id="@+id/action_settings"
           android:title="@string/action_settings"
           android:orderInCategory="100"

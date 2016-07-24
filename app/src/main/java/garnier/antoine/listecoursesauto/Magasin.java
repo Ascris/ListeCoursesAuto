@@ -55,9 +55,15 @@ public class Magasin {
         ArrayList<Aliment> res= new ArrayList<Aliment>();
         for(Rayon r : rayons){
             for(Aliment a : r.getAlimentsAcceptes()){
+                System.out.println("Aliment " + a.toString() + " ajouté !");
                 res.add(a);
             }
         }
         return res;
+    }
+
+    public void ajoutAliment(String aliment_a_ajouter){
+        Aliment a= new Aliment(aliment_a_ajouter);
+        rayons.get(0).ajoutAliment(a); //ajout dans le premier rayon pour le moment
     }
 }

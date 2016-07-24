@@ -1,9 +1,14 @@
 package garnier.antoine.listecoursesauto;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,46 +28,54 @@ public class ScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         //Liste des aliments actuelle
-        afficherListeAliments();
+        //Premier magasin test
+        final Magasin m1= new Magasin("Carrefour");
+        Rayon r1= new Rayon("Fruits et légumes");
+        Aliment a1= new Aliment("Pomme");
+        Aliment a2= new Aliment("Concombre");
+        r1.ajoutAliment(a1);
+        r1.ajoutAliment(a2);
+        Rayon r2= new Rayon("Boulangerie");
+        Aliment a3= new Aliment("Pain");
+        Aliment a4= new Aliment("Croissant");
+        r2.ajoutAliment(a3);
+        r2.ajoutAliment(a4);
+        m1.ajoutRayon(r1);
+        m1.ajoutRayon(r2);
+
+        afficherListeAliments(m1);
+//        checkButtonClick();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Snackbar.make(view, "Waiting for something new", Snackbar.LENGTH_LONG)
+                TextInputEditText nouvel_aliment= (TextInputEditText) findViewById(R.id.nouvel_aliment);
+                String aliment_a_ajouter= nouvel_aliment.getText().toString();
+
+                Snackbar.make(view, aliment_a_ajouter, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                m1.ajoutAliment(aliment_a_ajouter);
+                afficherListeAliments(m1);
             }
         });
     }
 
-    private void afficherListeAliments(){
-        //Premier magasin test
-        Magasin m1= new Magasin("Carrefour");
-            Rayon r1= new Rayon("Fruits et légumes");
-                Aliment a1= new Aliment("Pomme");
-                Aliment a2= new Aliment("Concombre");
-                    r1.ajoutAliment(a1);
-                    r1.ajoutAliment(a2);
-            Rayon r2= new Rayon("Boulangerie");
-                Aliment a3= new Aliment("Pain");
-                Aliment a4= new Aliment("Croissant");
-                    r2.ajoutAliment(a3);
-                    r2.ajoutAliment(a4);
-        m1.ajoutRayon(r1);
-        m1.ajoutRayon(r2);
+    private void afficherListeAliments(Magasin m){
 
-        ArrayList<Aliment> allAliments= m1.getAllAliments();
+
+        ArrayList<Aliment> allAliments= m.getAllAliments();
 
         //ArrayAdapter pour les aliments du magasin
         dataAdapter= new MyCustomAdapter(this,
-                R.layout.ligne_aliment, allAliments);
+                R.layout.content_scrolling, allAliments);
         ListView liste_aliments= (ListView) findViewById(R.id.liste_aliments);
 
         liste_aliments.setAdapter(dataAdapter);
 
         liste_aliments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
                 //Affiche l'aliment quand on clique dessus
                 Aliment al= (Aliment) parent.getItemAtPosition(position);
                 Toast.makeText(getApplicationContext(),
@@ -126,33 +139,33 @@ public class ScrollingActivity extends AppCompatActivity {
 
     }
 
-    private void checkButtonClick() {
 
-
-        Button myButton = (Button) findViewById(R.id.findSelected);
-        myButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
-
-                ArrayList<Aliment> allAliments= dataAdapter.allAliments;
-                for(int i= 0 ; i < allAliments.size(); ++i){
-                    Aliment al= allAliments.get(i);
-                    if(al.isSelected()){
-                        responseText.append("\n" + al.getNom());
-                    }
-                }
-
-                Toast.makeText(getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-    }
+//    private void checkButtonClick() {
+//
+//        Button myButton = (Button) findViewById(R.id.findSelected);
+//        myButton.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//                StringBuffer responseText = new StringBuffer();
+//                responseText.append("The following were selected...\n");
+//
+//                ArrayList<Aliment> allAliments= dataAdapter.allAliments;
+//                for(int i= 0 ; i < allAliments.size(); ++i){
+//                    Aliment al= allAliments.get(i);
+//                    if(al.isSelected()){
+//                        responseText.append("\n" + al.getNom());
+//                    }
+//                }
+//
+//                Toast.makeText(getApplicationContext(),
+//                        responseText, Toast.LENGTH_LONG).show();
+//
+//            }
+//        });
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,10 +181,51 @@ public class ScrollingActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id) {
+            //noinspection SimplifiableIfStatement
+            case R.id.action_settings:
+                return true;
+
+            case R.id.ajouter_aliment_au_rayon:
+
+                // custom dialog
+                final Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.layout_ajout_aliment_au_rayon);
+                dialog.setTitle("Ajouter un aliment dans un rayon");
+                dialog.show();
+                return true;
+
+            case R.id.check_aliments:
+                StringBuffer responseText = new StringBuffer();
+                responseText.append("Il vous manque ces aliments :\n");
+
+                ArrayList<Aliment> allAliments= dataAdapter.allAliments;
+                for(int i= 0 ; i < allAliments.size(); ++i){
+                    Aliment al= allAliments.get(i);
+                    if(!al.isSelected()){
+                        responseText.append("\n" + al.getNom());
+                    }
+                }
+
+                Toast.makeText(getApplicationContext(),
+                        responseText, Toast.LENGTH_LONG).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.layout_ajout_aliment_au_rayon, null));
+
+
+        return builder.create();
     }
 }

@@ -91,4 +91,12 @@
     </string>
     <string name="action_settings">Settings</string>
     <string name="ensembleAliments">Liste des aliments </string>
+    <string name="liste_test">Nouvel aliment</string>
+    <string name="mise_en_rayon">Mise en rayon</string>
+    <string name="check_aliments">Check aliments</string>
+    <string name="valider">Valider</string>
+    <string name="annuler">Annuler</string>
+    <string name="nouvel_aliment">Nouvel aliment : </string>
+    <string name="rayon">Rayon : </string>
+    <string name="ajout_dans_rayon">Ajout dans rayon</string>
 </resources>

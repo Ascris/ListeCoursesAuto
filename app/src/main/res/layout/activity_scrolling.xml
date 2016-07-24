@@ -30,19 +30,21 @@
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <Button
-            android:id="@+id/findSelected"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Verification aliments selectionnes" />
 
     <include layout="@layout/content_scrolling"/>
 
-
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/nouvel_aliment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/liste_test"
+        android:background="@color/colorAccent"
+        app:layout_anchor="@id/app_bar"
+        app:theme="@style/AppTheme"
+        app:layout_anchorGravity="bottom|end"/>
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -52,5 +54,6 @@
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|end"
             android:src="@android:drawable/ic_menu_add"/>
+
 
 </android.support.design.widget.CoordinatorLayout>
