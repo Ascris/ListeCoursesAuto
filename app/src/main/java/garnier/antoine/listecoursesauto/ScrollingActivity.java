@@ -18,12 +18,12 @@ import android.widget.*;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ScrollingActivity extends AppCompatActivity {
 
     MyCustomAdapter dataAdapter= null;
-    HashMap<String, String> rayon_aliment;
-    String FILENAME= "rayon-aliment";
+    Magasin m1= null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,22 +34,34 @@ public class ScrollingActivity extends AppCompatActivity {
 
         //Liste des aliments actuelle
         //Premier magasin test
-        final Magasin m1= new Magasin("Carrefour");
+        m1= new Magasin("Carrefour");
         Rayon r1= new Rayon("FruitsEtLegumes");
         Aliment a1= new Aliment("Pomme");
         Aliment a2= new Aliment("Concombre");
         r1.ajoutAliment(a1);
+        m1.repertorierAlimentRayon(a1.getNom(), r1.getNom());
         r1.ajoutAliment(a2);
+        m1.repertorierAlimentRayon(a2.getNom(), r1.getNom());
         Rayon r2= new Rayon("Boulangerie");
         Aliment a3= new Aliment("Pain");
         Aliment a4= new Aliment("Croissant");
         r2.ajoutAliment(a3);
+        m1.repertorierAlimentRayon(a3.getNom(), r2.getNom());
         r2.ajoutAliment(a4);
+        m1.repertorierAlimentRayon(a4.getNom(), r2.getNom());
+        System.out.println("NOMBRE DE RAYONS : " + m1.getRayons().size());
         m1.ajoutRayon(r1);
+        System.out.println("NOMBRE DE RAYONS : " + m1.getRayons().size());
         m1.ajoutRayon(r2);
+        System.out.println("NOMBRE DE RAYONS : " + m1.getRayons().size());
+
+        for(Map.Entry<String, String> couple : m1.getAlimentRayon().entrySet()){
+            System.out.println("STOCK " + couple.getKey() + " DANS RAYON " + couple.getValue());
+        }
 
         final ArrayList<String> ordreRayons= new ArrayList<String>();
         ordreRayons.add("Boulangerie");
+        ordreRayons.add("Inconnu");
         ordreRayons.add("FruitsEtLegumes");
         afficherAlimentsOrdonnes(m1, ordreRayons);
 
@@ -58,12 +70,19 @@ public class ScrollingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 TextInputEditText nouvel_aliment= (TextInputEditText) findViewById(R.id.nouvel_aliment);
                 String aliment_a_ajouter= nouvel_aliment.getText().toString();
+                if (!aliment_a_ajouter.replaceAll("\\s+", "").isEmpty()) {
+                    aliment_a_ajouter = nouvel_aliment.getText().toString();
+                    Snackbar.make(view, aliment_a_ajouter, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
 
-                Snackbar.make(view, aliment_a_ajouter, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                    m1.ajoutAlimentAListe(aliment_a_ajouter);
+                    afficherAlimentsOrdonnes(m1, ordreRayons);
+                } else {
+                    String ajout_impossible= "Ajout impossible";
+                    Snackbar.make(view, ajout_impossible, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
 
-                m1.ajoutAliment(aliment_a_ajouter);
-                afficherAlimentsOrdonnes(m1, ordreRayons);
             }
         });
     }
@@ -96,6 +115,7 @@ public class ScrollingActivity extends AppCompatActivity {
         ArrayList<Rayon> rayons= m.getRayons();
         for(Integer i : indicesRayons){
             Rayon r= rayons.get(i);
+            System.out.println("Rayon " + r.getNom() + " selectionne.");
             allAliments.addAll(r.getAliments());
         }
 
@@ -161,7 +181,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 holder= (ViewHolder) convertView.getTag();
             }
             Aliment al= allAliments.get(position);
-            holder.nomAliment.setText(" ("+al.getNom()+")");
+            holder.nomAliment.setText(" ("+ m1.getNomRayonFromNomAliment(al.getNom()) +")");
             holder.alimentCliquable.setText(al.getNom());
             holder.alimentCliquable.setChecked(al.isSelected());
             holder.alimentCliquable.setTag(al);
@@ -171,33 +191,6 @@ public class ScrollingActivity extends AppCompatActivity {
 
     }
 
-
-//    private void checkButtonClick() {
-//
-//        Button myButton = (Button) findViewById(R.id.findSelected);
-//        myButton.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//
-//                StringBuffer responseText = new StringBuffer();
-//                responseText.append("The following were selected...\n");
-//
-//                ArrayList<Aliment> allAliments= dataAdapter.allAliments;
-//                for(int i= 0 ; i < allAliments.size(); ++i){
-//                    Aliment al= allAliments.get(i);
-//                    if(al.isSelected()){
-//                        responseText.append("\n" + al.getNom());
-//                    }
-//                }
-//
-//                Toast.makeText(getApplicationContext(),
-//                        responseText, Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-//
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -276,6 +269,17 @@ public class ScrollingActivity extends AppCompatActivity {
                 EditText e2= (EditText)findViewById(R.id.nouvel_aliment_dans_rayon);
                 String nouvel_aliment= e2.getText().toString();
 
+                if(nouvel_aliment.isEmpty()){
+                    String aliment_manquant= "Saisissez un nom d'aliment...";
+                    System.out.println(aliment_manquant);
+                    Toast.makeText(getApplicationContext(), aliment_manquant, Toast.LENGTH_LONG).show();
+                } else if (nom_rayon.isEmpty()){
+                    m1.repertorierAlimentRayon(nouvel_aliment, "Inconnu");
+                    Toast.makeText(getApplicationContext(), "Ajout de l'aliment au rayon Inconnu", Toast.LENGTH_LONG).show();
+                } else {
+                    m1.repertorierAlimentRayon(nouvel_aliment, nom_rayon);
+                    Toast.makeText(getApplicationContext(), "Ajout reussi", Toast.LENGTH_LONG).show();
+                }
 
             }
 

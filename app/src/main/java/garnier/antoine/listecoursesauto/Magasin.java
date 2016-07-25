@@ -1,6 +1,7 @@
 package garnier.antoine.listecoursesauto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by AsCris64 on 21/07/2016.
@@ -8,15 +9,20 @@ import java.util.ArrayList;
 public class Magasin {
     private String nom;
     private ArrayList<Rayon> rayons; //liste des rayons du magasin
+    private HashMap<String, String> aliment_rayon;
 
     //Constructeurs
     public Magasin(){
         nom= "";
         rayons= new ArrayList<Rayon>();
+        rayons.add(new Rayon("Inconnu")); //rayon present de base
+        aliment_rayon= new HashMap<String, String>();
     }
     public Magasin(String name){
         nom= name;
         rayons= new ArrayList<Rayon>();
+        rayons.add(new Rayon("Inconnu")); //rayon present de base
+        aliment_rayon= new HashMap<String, String>();
     }
 
     //Getter & setter
@@ -38,6 +44,30 @@ public class Magasin {
         return res;
     }
 
+    /**
+     * Operations sur les couples "rayon - aliment"
+     *
+     * */
+    public HashMap<String, String> getAlimentRayon(){
+        return aliment_rayon;
+    }
+
+    public void repertorierAlimentRayon(String nom_aliment, String nom_rayon){
+        aliment_rayon.put(nom_aliment, nom_rayon);
+    }
+
+    public void repertorierAliment(String nom_aliment){
+        repertorierAlimentRayon(nom_aliment, "Inconnu");
+    }
+
+    public boolean estRepertorie(String nom_aliment){
+        return(aliment_rayon.containsKey(nom_aliment));
+    }
+
+    public String getNomRayonFromNomAliment(String nom_aliment){
+        return aliment_rayon.get(nom_aliment);
+    }
+
     //Ajoute un rayon s'il n'existe pas deja
     public void ajoutRayon(Rayon r){
         if(rayons.contains(r)){
@@ -47,7 +77,6 @@ public class Magasin {
             rayons.add(r);
         }
     }
-
     //Supprime un rayon
     public void suppressionRayon(Rayon r){
         if(rayons.contains(r)){
@@ -57,21 +86,18 @@ public class Magasin {
             System.out.println("Suppression impossible - rayon non existant");
         }
     }
+
     //Retourne la liste de tous les aliments du magasin
     public ArrayList<Aliment> getAllAliments(){
         ArrayList<Aliment> res= new ArrayList<Aliment>();
         for(Rayon r : rayons){
+            String nom_rayon= r.getNom();
             for(Aliment a : r.getAliments()){
-                System.out.println("Aliment " + a.toString() + " ajouté !");
+                System.out.println("Aliment " + a.toString() + " ajouté au rayon " + nom_rayon);
                 res.add(a);
             }
         }
         return res;
-    }
-
-    public void ajoutAliment(String aliment_a_ajouter){
-        Aliment a= new Aliment(aliment_a_ajouter);
-        rayons.get(0).ajoutAliment(a); //ajout dans le premier rayon pour le moment
     }
 
     public Integer getIndiceRayon(String nom_rayon){
@@ -84,6 +110,7 @@ public class Magasin {
     public void ajoutAlimentARayon(String nom_rayon, Aliment a){
         int indice_rayon= getIndiceRayon(nom_rayon);
         rayons.get(indice_rayon).ajoutAliment(a);
+        repertorierAlimentRayon(a.getNom(), nom_rayon);
     }
 
     public ArrayList<Aliment> getAllAlimentsRayon(String nom_rayon){
@@ -110,5 +137,14 @@ public class Magasin {
         return res;
     }
 
+    public void ajoutAlimentAListe(String nom_aliment){
+        //si l'aliment n'est pas repertorie, il le devient
+        if(!estRepertorie(nom_aliment)){
+            repertorierAliment(nom_aliment);
+        }
+        String nom_rayon= getNomRayonFromNomAliment(nom_aliment);
+        Rayon rayon_courant= rayons.get(getIndiceRayon(nom_rayon));
+        rayon_courant.ajoutAliment(new Aliment(nom_aliment));
+    }
 
 }

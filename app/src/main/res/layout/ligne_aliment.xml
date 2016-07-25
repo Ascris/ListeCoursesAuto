@@ -9,6 +9,7 @@
     <ImageView android:id="@+id/picAliment"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:contentDescription="@string/picAliment"
                app:layout_anchor="@id/app_bar"
                app:layout_anchorGravity="bottom|end"
                android:maxHeight="@dimen/image_aliment"
@@ -19,24 +20,15 @@
             android:id="@+id/alimentCliquable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/picAliment"
-            android:layout_alignBottom="@id/picAliment"
-            android:layout_toRightOf="@id/picAliment"
             android:layout_gravity="center"
-            android:layout_alignParentLeft="true"
             android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:text="CheckBox" />
+            android:focusableInTouchMode="false"/>
 
     <TextView
             android:id="@+id/nomAliment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/alimentCliquable"
-            android:layout_alignBottom="@id/alimentCliquable"
-            android:layout_toRightOf="@+id/alimentCliquable"
-            android:layout_gravity="center"
-            android:text="TextView"/>
+            android:layout_gravity="center"/>
 
 
 </LinearLayout>

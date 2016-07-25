@@ -99,4 +99,5 @@
     <string name="nouvel_aliment">Nouvel aliment : </string>
     <string name="rayon">Rayon : </string>
     <string name="ajout_dans_rayon">Ajout dans rayon</string>
+    <string name="picAliment">Image aliment</string>
 </resources>
